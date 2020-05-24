@@ -17,6 +17,9 @@ class MovieViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def rate_movie(self, request, pk=None):
         if 'stars' in request.data:
+
+            print(pk + ' ✔')  # prink pk to terminal ✔
+
             response = {'message': 'its working!'}
             return Response(response, status=status.HTTP_200_OK)
         else:
