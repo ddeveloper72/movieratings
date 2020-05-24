@@ -9,6 +9,11 @@ class Movie(models.Model):
     title = models.CharField(max_length=32)
     description = models.TextField(max_length=360)
 
+    # count the number of ratings for the movie
+    def no_of_ratings(self):
+        ratings = Rating.objects.filter(movie=self)
+        return len(ratings)
+
 
 class Rating(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
