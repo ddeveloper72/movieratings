@@ -12,7 +12,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = (MovieSerializer,)  #  specify tuple
 
 
-class MovieViewSet(viewsets.ModelViewSet):
+class RatingViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Rating.objects.all()
     serializer_class = (RatingSerializer,)  # specify tuple
