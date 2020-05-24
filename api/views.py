@@ -9,10 +9,10 @@ from .serializers import MovieSerializer, RatingSerializer
 class MovieViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Movie.objects.all()
-    serializer_class = (MovieSerializer,)  #  specify tuple
+    serializer_class = MovieSerializer
 
 
 class RatingViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Rating.objects.all()
-    serializer_class = (RatingSerializer,)  # specify tuple
+    serializer_class = RatingSerializer
