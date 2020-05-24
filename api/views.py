@@ -25,6 +25,17 @@ class MovieViewSet(viewsets.ModelViewSet):
             user = User.objects.get(id=1)  # work around to specify fixed user id for building views
             print('user', user.username + ' ✔')
 
+            try:
+                rating = Rating.objects.get(user=user.id,
+                                            movie=movie.id)  # stored in db
+                rating.stars = stars
+                rating.save()
+            except:
+                rating = Rating.objects.create(user=user,
+                                               movie=movie,
+                                               stars=stars)  # pass whole objects
+
+
             response = {'message': 'its working!'}
             return Response(response, status=status.HTTP_200_OK)
         else:
