@@ -19,7 +19,9 @@ class MovieViewSet(viewsets.ModelViewSet):
         if 'stars' in request.data:
 
             movie = Movie.objects.get(id=pk)  # select movie from db base on primary key
-            print('movie title', movie.title + ' ✔')
+            stars = request.data['stars']
+            user = request.user
+            print('user', user)
 
             response = {'message': 'its working!'}
             return Response(response, status=status.HTTP_200_OK)
