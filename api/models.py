@@ -9,7 +9,7 @@ class Movie(models.Model):
     description = models.TextField(max_length=360)
 
 
-class Rading(models.Model):
-    movie = models.ForeignKey(Movie)
+class Rating(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     # include user from Django auth that made rating
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
