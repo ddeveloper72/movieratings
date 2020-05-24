@@ -18,7 +18,8 @@ class MovieViewSet(viewsets.ModelViewSet):
     def rate_movie(self, request, pk=None):
         if 'stars' in request.data:
 
-            print(pk + ' ✔')  # prink pk to terminal ✔
+            movie = Movie.objects.get(id=pk)  # select movie from db base on primary key
+            print('movie title', movie.title + ' ✔')
 
             response = {'message': 'its working!'}
             return Response(response, status=status.HTTP_200_OK)
