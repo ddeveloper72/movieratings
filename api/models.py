@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -13,3 +14,5 @@ class Rating(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     # include user from Django auth that made rating
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # specify no of stars between 1 & 5
+    stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
