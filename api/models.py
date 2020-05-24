@@ -16,3 +16,8 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # specify no of stars between 1 & 5
     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    #  insure the user can not rate for the same movie more than once
+    class Meta:
+        unique_together = (('user', 'movie'),)  # tuple
+        index_together = (('user', 'movie'),)
