@@ -13,6 +13,15 @@ class Movie(models.Model):
     def no_of_ratings(self):
         ratings = Rating.objects.filter(movie=self)
         return len(ratings)
+ 
+
+    # sum ratings and divide by number of ratings
+    def ave_ratings(self):
+        sum = 0
+        ratings = Rating.objects.filter(movie=self)
+        for rating in ratings:
+            sum += rating
+        return sum / len(ratings)
 
 
 class Rating(models.Model):
