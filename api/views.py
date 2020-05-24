@@ -15,7 +15,7 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     # for a specific movie, True using method POST
     @action(detail=True, methods=['POST'])
-    def rate_movie(self, request):
+    def rate_movie(self, request, pk=None):
         response = {'message': 'its working!'}
         return Response(response, status=status.HTTP_200_OK)
 
