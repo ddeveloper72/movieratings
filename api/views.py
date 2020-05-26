@@ -25,9 +25,8 @@ class MovieViewSet(viewsets.ModelViewSet):
             movie = Movie.objects.get(id=pk)  # select movie from db base on primary key
             stars = request.data['stars']
             user = request.user
-            print('user', user)
             #user = User.objects.get(id=1)  # work around to specify fixed user id for building views
-            print('user', user.username + ' ✔')
+            #print('user', user.username + ' ✔')
 
             try:
                 rating = Rating.objects.get(user=user.id,
