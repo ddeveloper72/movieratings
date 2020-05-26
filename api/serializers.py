@@ -6,7 +6,9 @@ from .models import Movie, Rating
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password')    
+        fields = ('id', 'username', 'password')
+        # define parameters for password
+        extra_kwargs = {'password': {'write_only': True, 'required': True}} 
 
 
 class MovieSerializer(serializers.ModelSerializer):
