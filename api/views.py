@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 from .models import Movie, Rating
 from .serializers import MovieSerializer, RatingSerializer
+
 
 # Create your views here.
 
@@ -13,6 +15,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    authentication_classes = (TokenAuthentication, )
 
     # for a specific movie, True using method POST
     @action(detail=True, methods=['POST'])
@@ -21,8 +24,9 @@ class MovieViewSet(viewsets.ModelViewSet):
 
             movie = Movie.objects.get(id=pk)  # select movie from db base on primary key
             stars = request.data['stars']
-            #user = request.user
-            user = User.objects.get(id=1)  # work around to specify fixed user id for building views
+            user = request.user
+            print('user', user)
+            #user = User.objects.get(id=1)  # work around to specify fixed user id for building views
             print('user', user.username + ' ✔')
 
             try:
