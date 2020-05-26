@@ -57,3 +57,4 @@ class RatingViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    authentication_classes = (TokenAuthentication, )
