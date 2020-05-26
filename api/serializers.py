@@ -10,6 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
         # define parameters for password
         extra_kwargs = {'password': {'write_only': True, 'required': True}} 
 
+    #  create own definition to create user from built in crate_user function
+    def crate(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
