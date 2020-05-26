@@ -53,11 +53,9 @@ class MovieViewSet(viewsets.ModelViewSet):
                             'result': serializer.data}
                 return Response(response, status=status.HTTP_200_OK)
 
-
         else:
             response = {'message': 'You need to provide stars'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class RatingViewSet(viewsets.ModelViewSet):
@@ -67,3 +65,11 @@ class RatingViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication, )
     # add permission class to RatingViewSet view function
     permission_classes = (IsAuthenticated, )
+
+    def update(self, request, *args, **kwargs):
+        response = {'message': 'You can\'t update ratings like that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        response = {'message': 'You can\'t create ratings like that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
