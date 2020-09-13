@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'password')
         # define parameters for password
-        extra_kwargs = {'password': {'write_only': True, 'required': True}} 
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     #  create own definition to create user from built in crate_user function
     def create(self, validated_data):
@@ -22,7 +22,14 @@ class UserSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'description', 'no_of_ratings', 'ave_ratings')
+        fields = (
+            'id',
+            'title',
+            'description',
+            'image',
+            'no_of_ratings',
+            'ave_ratings'
+            )
 
 
 class RatingSerializer(serializers.ModelSerializer):
