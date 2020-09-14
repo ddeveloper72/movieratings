@@ -26,7 +26,7 @@ class MovieSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'description',
-            'image',
+            'imagePath',
             'no_of_ratings',
             'ave_ratings'
             )
