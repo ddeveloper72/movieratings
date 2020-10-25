@@ -11,12 +11,17 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
-# Switch Debug between True and False
-if os.environ.get('DEVELOPMENT'):
-    development = True
-else:
-    development = False
+# import environmental variables from external env.py
+if os.path.exists('env.py'):
+    import env
+
+# # Switch Debug between True and False
+# if os.environ.get('DEVELOPMENT'):
+#     development = True
+# else:
+#     development = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = development
+DEBUG = os.environ.get('DEVELOPMENT')
 
 ALLOWED_HOSTS = [
     os.environ.get('localhost', '127.0.0.1'),
@@ -87,12 +92,20 @@ WSGI_APPLICATION = 'movierater.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if "DATABASE_URL" in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse
+        (os.environ.get('DATABASE_URL'))
     }
-}
+    print("Production Database URL found.  Using PostgreSQL")
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    print("Database URL found.  Using local sqlite3")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': {
