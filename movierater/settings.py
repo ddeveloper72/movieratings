@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'home',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +86,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATICFILES_FINDERS = [
+    'compressor.finders.CompressorFinder',
 ]
 
 WSGI_APPLICATION = 'movierater.wsgi.application'
@@ -117,6 +122,11 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:4200"
 ]
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -155,6 +165,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = 'static'
 
 MEDIA_URL = '/img/'
 
