@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block page_title %}404 error{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="">
+            <a href="{% url 'index' %}"><img class="" src="{% static 'img/404error.jpeg' %}"
+                    alt="404 page not found"></a>
+        </div>
+        <div class="">
+            <p class="">What you were looking for is just not there...</p>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %}

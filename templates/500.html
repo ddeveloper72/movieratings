@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block page_title %}500 error{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="">
+            <a href="{% url 'index' %}"><img class="" src="{% static 'img/500error.jpeg' %}"
+                    alt="500 server error"></a>
+        </div>
+        <div class="">
+            <p class="">We're sorry, there's been a server error...</p>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %}
