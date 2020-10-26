@@ -1,13 +1,18 @@
 {% extends "base.html" %}
-{% load compress %}
+{% load static %}
 
 {% block content %}
 
 <div class="container">
-    <h1>Movie Rater API</h1>
+    <div class="container__header">
+        <svg class="container__header--sprite">
+        <use class="container__header--sprite-icon" xlink:href="{% static 'sprites/sprite.svg' %}#icon-film">
+        </use>
+        </svg>
+        <h1 class="container__header--main">Movie Rater API</h1>
+    </div>
+    <p class="container__txt">This Django rest API was developed to work in combination the Angular front end application, Movie Rater</p>
 </div>
-<div class="container text-center">
-    <p>This Django rest API was developed to work in combination the Angular front end application, Movie Rater</p>
-</div>
+
 
 {% endblock content %}
