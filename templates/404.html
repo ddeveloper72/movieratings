@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% load compress %}
+{% load static %}
+
 {% block page_title %}404 error{% endblock %}
 
 {% block content %}
@@ -7,7 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="">
-            <a href="{% url 'index' %}"><img class="" src="{% static 'img/404error.jpeg' %}"
+            <a href="{% url 'index' %}"><img class="" src="{% static 'img/404error.png' %}"
                     alt="404 page not found"></a>
         </div>
         <div class="">
