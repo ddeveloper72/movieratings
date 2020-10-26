@@ -1,26 +1,28 @@
-{% load compress %}
+{% load static %}
 
-{% compress css %}
-<link type="text/x-scss" href="{% static 'bootstrap/bootstrap.scss' %}" rel="stylesheet" media="screen">
+<link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
 
-{% endcompress %}
+{% block stylesheet %}{% endblock %}
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie-Ratter API</title>
 </head>
+
 <body>
-    
+
     <main class="">
-    
+
         {% block content %}
-    
+
         {% endblock %}
-    
+
     </main>
-    
+
 </body>
+
 </html>
