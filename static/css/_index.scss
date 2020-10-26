@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px;
+
+    &__header {
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        font-size: 3rem;
+
+        &--sprite {
+            
+            &-icon {
+                fill: #e2eaef;
+                width: 80px;
+                height: auto;
+                justify-content: center;
+                align-items: center;
+                margin-right: 15px;
+                
+            }
+        }
+
+        &--main {
+            color: #e2d285;
+            font-family: cursive;
+        }
+        
+    }
+
+
+    &__txt {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        font-size: 2rem;
+    
+    }
+}
