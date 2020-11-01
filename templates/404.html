@@ -5,14 +5,18 @@
 
 {% block content %}
 
+
 <div class="container">
-    <div class="row">
-        <div class="">
-            <a href="{% url 'index' %}"><img class="" src="{% static 'img/404error.png' %}"
-                    alt="404 page not found"></a>
+    {% include 'partials/_banner.html' %}
+    <div class="container__error">
+        <div class="container__error--img">
+            <a href="{% url 'index' %}">
+                <img src="{% static 'img/404error.png' %}" alt="404 page not found">
+            </a>
+
         </div>
-        <div class="">
-            <p class="">What you were looking for is just not there...</p>
+        <div class="container__error--description">
+            <p>What you were looking for is just not there...</p>
         </div>
 
     </div>
