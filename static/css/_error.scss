@@ -1,0 +1,39 @@
+.container {
+    
+    
+    &__error {
+        display: grid;
+        row-gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+        // padding: 20px;
+        
+        &--img {
+            
+            img {
+                border-radius: 5px;
+                width: 100%;
+                max-width: 500px;
+                height: auto;
+
+            }
+            
+        }
+        
+
+        &--description {
+            grid-row: 2 / 3;
+            font-size: 2rem;
+
+            @media only screen and (max-width: 420px) {
+                font-size: 1.6rem;
+            }
+            @media only screen and (max-width: 240px) {
+                font-size: 1.2rem;
+            }
+        }
+
+
+    }
+
+}
