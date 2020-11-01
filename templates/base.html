@@ -1,9 +1,5 @@
 {% load static %}
 
-<link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
-
-{% block stylesheet %}{% endblock %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie-Ratter API</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+
+    {% block stylesheet %}{% endblock %}
 </head>
 
 <body>
