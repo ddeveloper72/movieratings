@@ -21,8 +21,12 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.compat import re_path
 from .settings import MEDIA_ROOT
 from movierater import settings
+from django.views.generic.base import RedirectView
+
+favicon_view = RedirectView.as_view(url='favicon/favicon.ico', permanent=True)
 
 urlpatterns = [
+    path('favicon.ico/', favicon_view, name="favicon"),
     path('', include('home.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
