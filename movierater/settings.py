@@ -18,10 +18,12 @@ if os.path.exists('env.py'):
     import env
 
 # # Switch Debug between True and False
-# if os.environ.get('DEVELOPMENT'):
-#     development = True
-# else:
-#     development = False
+if os.environ.get('DEVELOPMENT'):
+    development = True
+    print("Running in development mode")
+else:
+    development = False
+    print("Running in production mode")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,7 +36,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEVELOPMENT')
+DEBUG = development
 
 ALLOWED_HOSTS = [
     os.environ.get('localhost', '127.0.0.1'),
@@ -54,8 +56,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'api',
-    'home',
+    'storages',
+    'api',  # apps
+    'home',  # apps
 ]
 
 MIDDLEWARE = [
@@ -81,6 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.media',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -160,14 +164,67 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+# AWS S3 bucket parameters for production
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+if DEBUG:
+    STATIC_URL = '/static/'
 
-MEDIA_URL = '/img/'
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
 
-MEDIA_ROOT = (
-    os.path.join(BASE_DIR, 'media'),
-)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+    STATICFILES_FINDERS = (
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    )
+
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
+    # AWS custom domain and , media files location, gets injected here
+    MEDIA_URL = '/img/'
+
+    MEDIA_ROOT = (
+        os.path.join(BASE_DIR, 'media'),
+    )
+else:
+    AWS_S3_OBJECT_PARAMETERS = {
+        'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+        'CacheControl': 'max-age=94608000',
+    }
+    AWS_LOCATION = 'static'
+    AWS_S3_REGION_NAME = 'eu-west-1'
+    AWS_STORAGE_BUCKET_NAME = 'movie-rater'
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    AWS_DEFAULT_ACL = None
+    
+    # static files storage parameters
+    DEFAULT_FILE_STORAGE = 'app.storage_backends.MediaStorage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    STATIC_URL = '/static/'
+
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
+
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+    STATICFILES_FINDERS = (
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    )
+
+    MEDIAFILES_LOCATION = 'media'
+    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
+    # AWS custom domain and , media files location, gets injected here
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+    MEDIA_ROOT = (
+        os.path.join(BASE_DIR, 'media'),
+    )
