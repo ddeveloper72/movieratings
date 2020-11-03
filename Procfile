@@ -1,0 +1,1 @@
+web: gunicorn movierater.wsgi:application 
