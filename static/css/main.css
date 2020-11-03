@@ -34,6 +34,42 @@ body {
   min-height: 100vh;
 }
 
+.container__error {
+  display: -ms-grid;
+  display: grid;
+  row-gap: 15px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-top: 20px;
+}
+
+.container__error--img img {
+  border-radius: 5px;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+}
+
+.container__error--description {
+  -ms-grid-row: 2;
+  -ms-grid-row-span: 1;
+  grid-row: 2 / 3;
+  font-size: 2rem;
+}
+
+@media only screen and (max-width: 420px) {
+  .container__error--description {
+    font-size: 1.6rem;
+  }
+}
+
+@media only screen and (max-width: 240px) {
+  .container__error--description {
+    font-size: 1.2rem;
+  }
+}
+
 .container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -43,6 +79,14 @@ body {
       -ms-flex-direction: column;
           flex-direction: column;
   margin-top: 80px;
+  padding: 20px;
+}
+
+@media only screen and (max-width: 860px) {
+  .container {
+    margin-top: 0;
+    padding: 0 20px;
+  }
 }
 
 .container__header {
@@ -58,6 +102,32 @@ body {
   font-size: 3rem;
 }
 
+@media only screen and (max-width: 860px) {
+  .container__header {
+    font-size: 2rem;
+    padding: 0;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .container__header {
+    font-size: 1.6rem;
+  }
+}
+
+@media only screen and (max-width: 385px) {
+  .container__header {
+    font-size: 1.2rem;
+    margin: 20px 0;
+  }
+}
+
+@media only screen and (max-width: 275px) {
+  .container__header {
+    font-size: 1rem;
+  }
+}
+
 .container__header--sprite-icon {
   fill: #e2eaef;
   width: 80px;
@@ -69,6 +139,14 @@ body {
       -ms-flex-align: center;
           align-items: center;
   margin-right: 15px;
+}
+
+@media only screen and (max-width: 860px) {
+  .container__header--sprite {
+    width: 10vw;
+    margin-top: 0;
+    margin-right: 10px;
+  }
 }
 
 .container__header--main {
@@ -85,5 +163,17 @@ body {
           justify-content: center;
   text-align: center;
   font-size: 2rem;
+}
+
+@media only screen and (max-width: 420px) {
+  .container__txt {
+    font-size: 1.6rem;
+  }
+}
+
+@media only screen and (max-width: 240px) {
+  .container__txt {
+    font-size: 1.2rem;
+  }
 }
 /*# sourceMappingURL=main.css.map */
