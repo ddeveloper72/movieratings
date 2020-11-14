@@ -1,0 +1,24 @@
+{% block _nav %}
+
+<nav class="navbar">
+    <span class="navbar-toggle" onclick="toggleMobileNav()"></span>
+    <ul class="navbar__nav" id="mobile-menu">
+        <li class="navbar__nav--item navbar__mobile--item" routerLink="/movies">
+            <svg class="navbar__brand--sprite">
+                <use class="navbar__brand--sprite-icon" xlink:href="#icon-angular">
+                </use>
+            </svg>
+            <text class="navbar__brand--txt">With</text>
+            <svg class="navbar__brand--sprite">
+                <use class="navbar__brand--sprite-icon" xlink:href="#icon-django">
+                </use>
+            </svg>
+            <text class="navbar__brand--txt">REST API</text>
+        </li>
+        <li class="navbar__nav--item">
+            <a class="navbar__nav--item-link navbar__mobile--item-link" href="{% url 'login' %}">Login</a>
+        </li>
+    </ul>
+</nav>
+
+{% endblock _nav %}
