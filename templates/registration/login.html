@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+{% include "partials/_nav.html" %}
+
+<div class="container">
+    {% include 'partials/_banner.html' %}
+    <div class="container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
