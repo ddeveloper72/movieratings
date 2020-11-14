@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf.urls import include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.compat import re_path
-from .settings import MEDIA_ROOT
 from movierater import settings
 from django.views.generic.base import RedirectView
 
@@ -28,6 +28,10 @@ favicon_view = RedirectView.as_view(url='favicon/favicon.ico', permanent=True)
 urlpatterns = [
     path('favicon.ico/', favicon_view, name="favicon"),
     path('', include('home.urls')),
+    path('login/', LoginView.as_view(),
+        {'template_name': 'core/login.html'}, name='login'),
+    path('logout/', LogoutView.as_view(),
+        {'next_page': '/'}, name='logout'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('auth/', obtain_auth_token),
