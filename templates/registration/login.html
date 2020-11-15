@@ -10,12 +10,19 @@
 
 <div class="container">
     {% include 'partials/_banner.html' %}
-    <div class="container">
-        <h2>Login</h2>
-        <form method="post">
+    <div class="container__form">
+        <h2 class="container__form--header">Login</h2>
+        <form class="container__form--fields" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Login</button>
+            <button class="container__form--button"
+            type="submit">
+            <span>
+                <svg class="container__form--button-svg">
+                    <use xlink:href="#icon-login">
+                    </use>
+                </svg>Login</span>
+            </button>
         </form>
     </div>
 </div>
