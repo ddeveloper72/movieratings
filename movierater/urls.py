@@ -28,10 +28,11 @@ favicon_view = RedirectView.as_view(url='favicon/favicon.ico', permanent=True)
 urlpatterns = [
     path('favicon.ico/', favicon_view, name="favicon"),
     path('', include('home.urls')),
+    # add a custom admin login page
     path('login/', LoginView.as_view(),
         {'template_name': 'core/login.html'}, name='login'),
-    path('logout/', LogoutView.as_view(),
-        {'next_page': '/'}, name='logout'),
+    # include logout page as home for admin on logout
+    path('admin/logout/', include('home.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('auth/', obtain_auth_token),
