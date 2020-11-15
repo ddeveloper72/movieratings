@@ -310,9 +310,6 @@ body {
 }
 
 .navbar__nav--item {
-  margin-right: 20px;
-  font-size: 2.2rem;
-  list-style-type: none;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -320,6 +317,10 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  margin-right: 20px;
+  font-size: 2.2rem;
+  list-style-type: none;
+  cursor: pointer;
 }
 
 .navbar__nav--item:first-child {
@@ -350,7 +351,7 @@ body {
   cursor: pointer;
 }
 
-.navbar__brand {
+.navbar__brand, .navbar a {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -362,6 +363,7 @@ body {
           align-items: center;
   cursor: pointer;
   outline: none;
+  text-decoration: none;
   margin-right: 15px;
   -webkit-transition: -webkit-transform .4s;
   transition: -webkit-transform .4s;
@@ -369,7 +371,7 @@ body {
   transition: transform .4s, -webkit-transform .4s;
 }
 
-.navbar__brand--sprite {
+.navbar__brand--sprite, .navbar a--sprite {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -386,20 +388,20 @@ body {
   margin-right: 2px;
 }
 
-.navbar__brand--sprite:hover {
+.navbar__brand--sprite:hover, .navbar a--sprite:hover {
   -webkit-transform: scale(1.2);
           transform: scale(1.2);
 }
 
-.navbar__brand--sprite-icon {
+.navbar__brand--sprite-icon, .navbar a--sprite-icon {
   fill: #fff;
 }
 
-.navbar__brand--sprite:not(:last-of-type) {
+.navbar__brand--sprite:not(:last-of-type), .navbar a--sprite:not(:last-of-type) {
   background-color: #fff;
 }
 
-.navbar__brand--txt {
+.navbar__brand--txt, .navbar a--txt {
   margin: 0 5px;
   color: #fff;
 }
