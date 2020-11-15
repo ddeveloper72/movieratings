@@ -1,0 +1,96 @@
+.container {
+    
+    
+    &__form {
+        display: grid;
+        grid-template-columns: 1fr 40% 1fr;
+        justify-content: center;
+        margin-top: 20px;
+        
+        &--header {
+            grid-column: 2 / 3;
+            font-size: 2.2rem;
+            color: #ca7009;
+
+        }
+
+        &--fields {
+             grid-column: 2 / 3;
+            margin-top: 20px;
+    
+            & label {
+                font-size: 1.2rem;
+                justify-items: center;
+                align-items: center;
+                border-radius: 5px;
+                margin-right: 10px;
+                margin-bottom: 15px;
+                
+            }
+        
+            & input {
+                font-size: 1.8rem;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                border-radius: 5px;
+                padding: 10px;
+                height: 35px;
+                width: 40%;
+        
+                &:active,
+                &:focus {
+                    outline: none;
+                    background-color: #eee4ca;
+                }
+        
+            }
+        }
+
+        &--button {
+            display: flex;
+            align-items: center;
+            width: 140px;
+            border: none;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #ec840d;
+            padding: 12px 20px;
+            text-transform: capitalize;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all .2s;
+
+            &-svg {
+                height: 2rem;
+                width: 2rem;
+                float: left;
+                margin-right: 5px;
+                margin-top: -2px;
+                transition: all .4s;
+            }
+
+             
+             // when button enabled, grow save icon
+             &:hover {
+                 background-color: #ca7009;
+
+                 svg {
+                     // transition location & scale of svg on hover
+                     display: flex;
+                     align-items: center;
+                     transform: translateX(4px) scale(1.1);
+                 }
+             }
+
+             &:active,
+             &:focus {
+                 outline: none;
+             }
+             
+        }
+
+    
+    }
+
+
+}
