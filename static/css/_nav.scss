@@ -12,11 +12,12 @@
         
         // large screen nav menu list
         &--item {
+            display: flex;
+            flex-direction: row;
             margin-right: 20px;
             font-size: 2.2rem;
             list-style-type: none;
-            display: flex;
-            flex-direction: row;
+            cursor: pointer;
             
 
             &:first-child {
@@ -47,12 +48,13 @@
 
 
     // branding menu style
-    &__brand {
+    &__brand, a {
         display: flex;
         justify-content: start;
         align-items: center;
         cursor: pointer;
         outline: none;
+        text-decoration: none;
         margin-right: 15px;
         transition: transform .4s;
         
