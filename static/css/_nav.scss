@@ -23,7 +23,7 @@
             &:first-child {
                 grid-column: 1 / 2;
                 justify-self: start;
-                margin-left: 1%;
+                padding-right: 10px;
             }
 
             // specify center justify for second child, Welcome username
@@ -55,7 +55,7 @@
         cursor: pointer;
         outline: none;
         text-decoration: none;
-        margin-right: 15px;
+        padding-right: 15px;
         transition: transform .4s;
         
         // svg sprite icons config & style
@@ -76,19 +76,20 @@
             
             &-icon {
                 fill: #fff;
-
+                
             }
-
+            
         }
-
+        
         &--sprite:not(:last-of-type) {
             background-color: #fff;
-
+            
         }
         
         &--txt {
             margin: 0 5px;
             color: #fff;
+            // padding-right: 10px;
         }
     }
 
@@ -99,6 +100,7 @@
         padding: 10px 0px;
         grid-template-columns: 90vw 10vw;
         grid-template-rows: repeat(4, 3rem);
+        padding-left: 10px;
 
 
         & li:not(:first-child){
@@ -113,7 +115,7 @@
 // responsive menu hides list on smaller screens
 @media screen and (max-width: 780px) {
     .navbar {
-
+        
         &__nav {
             padding: 10px;
 
@@ -155,7 +157,7 @@
             width: 25px;
             height: 1.5px;
             background-color: #9c9999;
-            margin-right: 15px;
+            margin-right: 0;
             cursor: pointer;
         }
 
