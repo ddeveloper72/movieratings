@@ -6,7 +6,7 @@
         grid-template-columns: 1fr 40% 1fr;
         justify-content: center;
         margin-top: -80px;
-        padding-bottom: 80px;
+        padding-bottom: 20px;
 
         @media screen and (max-width: 780px) {
             grid-template-columns: 1fr 90% 1fr;
@@ -67,6 +67,10 @@
             font-size: 1.8rem;
             cursor: pointer;
             transition: all .2s;
+
+            @media screen and (max-width: 390px) {
+                width: 100%;
+            }
             
             &-svg {         
                 height: 2rem;
