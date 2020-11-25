@@ -27,10 +27,8 @@ body {
     background-image: linear-gradient(to right bottom, var(--color-primary-dark), var(--color-primary-light));
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100%;
 }
 
 .content {
-    min-height: 100%;
-    margin-bottom: -80px;
+    min-height: calc(100vh - 80px);
 }
