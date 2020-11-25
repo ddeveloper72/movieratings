@@ -50,12 +50,12 @@
     // branding menu style
     &__brand, a {
         display: flex;
+        grid-column: 1 / 2;
         justify-content: start;
         align-items: center;
         cursor: pointer;
         outline: none;
         text-decoration: none;
-        padding-right: 15px;
         transition: transform .4s;
         
         // svg sprite icons config & style
@@ -96,6 +96,7 @@
     // mobile class toggled by JS to enable responsive list layout
     &__mobile {
         display: grid;
+        grid-column: 2 / -1;
         font-size: 3rem;
         padding: 10px 0px;
         grid-template-columns: 90vw 10vw;
@@ -132,9 +133,8 @@
     .navbar {
         
         &__brand {
-
             &--txt {
-                font-size: 1.8rem;
+                font-size: 1.2rem;
             }
         }
     }
