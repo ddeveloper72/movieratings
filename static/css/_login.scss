@@ -52,6 +52,19 @@
                 }
         
             }
+
+            & .errorlist.nonfield {
+                
+                & li {
+                    list-style: none;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    border-radius: 2px;
+                    background-color: #ca7009;
+                    padding: 1px 5px;
+
+                }
+            }
         }
 
         &--button {
