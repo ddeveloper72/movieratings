@@ -379,6 +379,15 @@ body {
   background-color: #eee4ca;
 }
 
+.container__form--fields .errorlist.nonfield li {
+  list-style: none;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 2px;
+  background-color: #ca7009;
+  padding: 1px 5px;
+}
+
 .container__form--button {
   display: -webkit-box;
   display: -ms-flexbox;
