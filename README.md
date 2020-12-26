@@ -2,7 +2,7 @@
 
 ## [live application on Heroku](https://ddeveloper72-movie-rater-api.herokuapp.com/)
 
-## Django 3.0.6. rest API application for providing secure access to the movie ratings SQL data base
+## Django 3.0.7. rest API application for providing secure access to the movie ratings SQL data base
 
 ## about me
 
