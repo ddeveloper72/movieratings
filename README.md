@@ -36,7 +36,7 @@ Here I'm referring to the built in Django LoginView as the view function then on
 
 I've used the concept, based on a tutorial by Senior Full Stack Engineer, Krystian Czekalski, then added to it for my own learning experience.
 
-#### The Models
+#### Beginning with the Models
 
 * 1st we setup a Movie mode:
 Each movie will have a title, description and an image.
@@ -47,5 +47,95 @@ the movie is linked to the 1st model  by ForeignKey
 the user from the authenticated User is linked by ForeignKey
 The number of stars given by the user out of 5, is assigned to the movie.
 The relationship between user and movie is unique.
+
+#### Setting up the Serializer
+
+In the simplest sense, the serializer makes sense of the Model data in JSON format objects.  
+
+This application has 3 serializers and these are the primary imports:
+
+```python
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Movie, Rating
+```
+
+UserSerializer returns the User model data as an object
+
+```JSON
+[
+    {
+        "id": 2,
+        "username": "sampleName01"
+    },
+    {
+        "id": 1,
+        "username": "sampleName02"
+    },
+    {
+        "id": 3,
+        "username": "sampleName03"
+    }
+]
+```
+
+MovieSerializer represents the model data as an object
+
+```JSON
+[
+    {
+        "id": 1,
+        "title": "Some Movie Title 1",
+        "description": "movie description 1",
+        "imagePath": "web-link for movie image 1",
+        "no_of_ratings": 3,
+        "ave_ratings": 3.6666666666666665
+    },
+    {
+        "id": 2,
+        "title": "Some Movie Title 2",
+        "description": "movie description 2",
+        "imagePath": "web-link for movie image 2",
+        "no_of_ratings": 2,
+        "ave_ratings": 3.5
+    },
+    {
+        "id": 3,
+        "title": "Some Movie Title 3",
+        "description": "movie description 3",
+        "imagePath": "web-link for movie image 3",
+        "no_of_ratings": 1,
+        "ave_ratings": 3.0
+    }
+]
+```
+
+RatingSerializer represents the model data as an object
+
+```JSON
+[
+    {
+        "id": 1,
+        "stars": 4,
+        "user": 1,
+        "movie": 1
+    },
+    {
+        "id": 2,
+        "stars": 2,
+        "user": 2,
+        "movie": 2
+    },
+    {
+        "id": 3,
+        "stars": 3,
+        "user": 3,
+        "movie": 1
+    }
+]
+```
+
+Each rating, links the movie to the user- the person who gave it their personal rating.  If we remove one of the users, we also remove their rating.  If we remove one of the movies, then the ratings for that movie from all of the different users are removed from the record.
+
 
 ![Readme Under Construction](https://github.com/ddeveloper72/django3-refresher/blob/master/static/img/django.png "Work in progress!")
