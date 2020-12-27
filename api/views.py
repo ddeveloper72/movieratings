@@ -18,11 +18,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class MovieViewSet(viewsets.ModelViewSet):
     # query everything from the movie model db
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     authentication_classes = (TokenAuthentication, )
+
     # add permission class to MovieViewSet view function
     permission_classes = (IsAuthenticated, )
 
@@ -30,12 +32,14 @@ class MovieViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def rate_movie(self, request, pk=None):
         if 'stars' in request.data:
-
-            movie = Movie.objects.get(id=pk)  # select movie from db base on primary key
+            
+            # select movie from db using primary key
+            movie = Movie.objects.get(id=pk)
             stars = request.data['stars']
             user = request.user
-            #user = User.objects.get(id=1)  # work around to specify fixed user id for building views
-            #print('user', user.username + ' ✔')
+            # work around to specify fixed user id for building views
+            # user = User.objects.get(id=1)
+            # print('user', user.username + ' ✔')
 
             try:
                 rating = Rating.objects.get(user=user.id,
@@ -46,10 +50,11 @@ class MovieViewSet(viewsets.ModelViewSet):
                 response = {'message': 'Rating Updated!', 
                             'result': serializer.data}
                 return Response(response, status=status.HTTP_200_OK)
-            except:
+            except Rating.DoesNotExist:
+                # pass whole objects
                 rating = Rating.objects.create(user=user,
                                                movie=movie,
-                                               stars=stars)  # pass whole objects
+                                               stars=stars)
                 response = {'message': 'Rating created!',
                             'result': serializer.data}
                 return Response(response, status=status.HTTP_200_OK)
