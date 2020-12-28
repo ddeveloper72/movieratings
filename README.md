@@ -58,9 +58,71 @@ This application has 3 serializers and these are the primary imports:
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Movie, Rating
+from rest_framework.authtoken.models import Token
 ```
 
-UserSerializer returns the User model data as an object
+UserSerializer returns the User model data as an object.  When creating a user, serializer uses rest framework to create a Token for the user.  This then negates the need to pass usernames and passwords while the user interacts with the API services.
+
+```python
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password')
+        # define parameters for password
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
+
+    #  create own definition to create user from built in crate_user function
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        # crate token for new user and add to user DB
+        Token.objects.create(user=user)
+        return user
+```
+
+Constructing the user in the database
+
+```JSON
+{
+    "name": "User List",
+    "description": "",
+    "renders": [
+        "application/json",
+        "text/html"
+    ],
+    "parses": [
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ],
+    "actions": {
+        "POST": {
+            "id": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "ID"
+            },
+            "username": {
+                "type": "string",
+                "required": true,
+                "read_only": false,
+                "label": "Username",
+                "help_text": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                "max_length": 150
+            },
+            "password": {
+                "type": "string",
+                "required": true,
+                "read_only": false,
+                "label": "Password",
+                "max_length": 128
+            }
+        }
+    }
+}
+```
+
+Raw data of the user list:
 
 ```JSON
 [
