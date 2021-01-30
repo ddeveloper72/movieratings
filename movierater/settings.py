@@ -122,7 +122,9 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:4200"
+    'http://localhost:4200',
+    'https://ddeveloper72.github.io/movie-rater',
+    'https://ddeveloper72-movie-rater.herokuapp.com/'
 ]
 
 COMPRESS_PRECOMPILERS = (
