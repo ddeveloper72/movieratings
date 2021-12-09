@@ -40,9 +40,7 @@ DEBUG = development
 
 ALLOWED_HOSTS = [
     os.environ.get('localhost', '127.0.0.1'),
-    'ddeveloper72-movie-rater-api.herokuapp.com',
-    'https://angular-movie-rater.web.app',
-    'https://angular-movie-rater.firebaseapp.com'
+    'ddeveloper72-movie-rater-api.herokuapp.com'
 ]
 
 
@@ -126,7 +124,9 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
     'https://ddeveloper72.github.io/movie-rater',
-    'https://ddeveloper72-movie-rater.herokuapp.com/'
+    'https://ddeveloper72-movie-rater.herokuapp.com/',
+    'https://angular-movie-rater.web.app',
+    'https://angular-movie-rater.firebaseapp.com'
 ]
 
 COMPRESS_PRECOMPILERS = (
