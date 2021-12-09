@@ -40,7 +40,9 @@ DEBUG = development
 
 ALLOWED_HOSTS = [
     os.environ.get('localhost', '127.0.0.1'),
-    'ddeveloper72-movie-rater-api.herokuapp.com'
+    'ddeveloper72-movie-rater-api.herokuapp.com',
+    'https://angular-movie-rater.web.app/',
+    'https://angular-movie-rater.firebaseapp.com/'
 ]
 
 
