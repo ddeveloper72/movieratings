@@ -14,8 +14,8 @@ import os
 import dj_database_url
 
 # import environmental variables from external env.py
-if os.path.exists('env.py'):
-    import env
+# if os.path.exists('env.py'):
+#     import env
 
 # # Switch Debug between True and False
 if os.environ.get('DEVELOPMENT'):
@@ -121,13 +121,12 @@ REST_FRAMEWORK = {
     }
 }
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:4200',
-    'https://ddeveloper72.github.io/movie-rater',
-    'https://ddeveloper72-movie-rater.herokuapp.com/',
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:4200/',
+    'http://localhost:3000/'
     'https://angular-movie-rater.web.app',
     'https://angular-movie-rater.firebaseapp.com'
-]
+)
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
