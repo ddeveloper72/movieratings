@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200/',
-    'http://localhost:3000/'
+    'http://localhost:3000/',
     'https://angular-movie-rater.web.app',
     'https://angular-movie-rater.firebaseapp.com'
 )
