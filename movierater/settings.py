@@ -10,14 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
 import dj_database_url
+import os
+
+import environ
 
 
-# import environmental variables from external env.py
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+
+
 # Switch Debug between True and False
-if os.path.exists('env.py'):
-    import env
+if environ.Env():
     development = True
     print("Running in development mode")
 else:
@@ -32,13 +37,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = development
 
 ALLOWED_HOSTS = [
-    os.environ.get('localhost', '127.0.0.1'),
+    '.localhost',
+    '127.0.0.1',
     'ddeveloper72-movie-rater-api.herokuapp.com'
 ]
 
@@ -99,12 +105,11 @@ LOGIN_REDIRECT_URL = '/admin/'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if "DATABASE_URL" in os.environ:
+if "DATABASE_URL" in env:
     DATABASES = {
-        'default': dj_database_url.parse
-        (os.environ.get('DATABASE_URL'))
-    }
-    print("Production Database URL found.  Using PostgreSQL")
+        'default':
+        dj_database_url.parse(env('DATABASE_URL'))}
+    print("Database URL found. Using PostgreSQL")
 else:
     DATABASES = {
         'default': {
