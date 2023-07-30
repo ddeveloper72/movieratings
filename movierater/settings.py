@@ -13,12 +13,11 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import dj_database_url
 
-# import environmental variables from external env.py
-# if os.path.exists('env.py'):
-#     import env
 
-# # Switch Debug between True and False
-if os.environ.get('DEVELOPMENT'):
+# import environmental variables from external env.py
+# Switch Debug between True and False
+if os.path.exists('env.py'):
+    import env
     development = True
     print("Running in development mode")
 else:
@@ -113,7 +112,7 @@ else:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-    print("Database URL found.  Using local sqlite3")
+    print("Database URL not found.  Using local sqlite3")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': {
@@ -122,8 +121,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:4200/',
-    'http://localhost:3000/',
+    'http://localhost:4200',
+    'http://localhost:3000',
     'https://angular-movie-rater.web.app',
     'https://angular-movie-rater.firebaseapp.com'
 )
