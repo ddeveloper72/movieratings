@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import dj_database_url
 import os
 
 import environ
@@ -20,6 +19,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
+import dj_database_url
 
 # Switch Debug between True and False
 if environ.Env():
