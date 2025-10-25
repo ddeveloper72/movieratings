@@ -115,28 +115,38 @@ LOGIN_REDIRECT_URL = '/admin/'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# In development mode, prefer sqlite unless DATABASE_URL is explicitly set in .env
-if DEBUG:
-    db_url = env("DATABASE_URL", default=None)
-    if db_url:
-        DATABASES = {
-            'default': dj_database_url.parse(db_url)
-        }
-        print("Database URL found. Using PostgreSQL")
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-            }
-        }
-        print("Database URL not found. Using local sqlite3")
-else:
-    # Production mode - require DATABASE_URL
+# Check if Azure SQL Database credentials are provided
+azure_sql_host = env("AZURE_SQL_HOST", default=None)
+
+if azure_sql_host:
+    # Use Azure SQL Database with ODBC Driver 18
     DATABASES = {
-        'default': dj_database_url.parse(env('DATABASE_URL'))
+        'default': {
+            'ENGINE': 'mssql',
+            'NAME': env('AZURE_SQL_NAME'),
+            'USER': env('AZURE_SQL_USER'),
+            'PASSWORD': env('AZURE_SQL_PASSWORD'),
+            'HOST': azure_sql_host,
+            'PORT': env('AZURE_SQL_PORT', default='1433'),
+            'OPTIONS': {
+                'driver': 'ODBC Driver 18 for SQL Server',
+                'extra_params': 'Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+            },
+        }
     }
-    print("Production mode: Using configured database")
+    print(f"Using Azure SQL Database: {env('AZURE_SQL_NAME')} on {azure_sql_host}")
+elif DEBUG:
+    # Development mode - use sqlite3
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    print("Using local sqlite3 for development")
+else:
+    # Production mode without database - error
+    raise ValueError("Production mode requires database credentials (AZURE_SQL_HOST, etc.)")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
