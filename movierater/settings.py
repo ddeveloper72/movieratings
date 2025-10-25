@@ -22,12 +22,9 @@ environ.Env.read_env()
 import dj_database_url
 
 # Switch Debug between True and False
-if environ.Env():
-    DEBUG = True
-    print("Running in development mode")
-else:
-    DEBUG = False
-    print("Running in production mode")
+# Toggle DEBUG via environment, default to True for local development
+DEBUG = env.bool("DEBUG", default=True)
+print("Running in development mode" if DEBUG else "Running in production mode")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -103,10 +100,11 @@ LOGIN_REDIRECT_URL = '/admin/'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if "DATABASE_URL" in env:
+db_url = env("DATABASE_URL", default=None)
+if db_url:
     DATABASES = {
-        'default':
-        dj_database_url.parse(env('DATABASE_URL'))}
+        'default': dj_database_url.parse(db_url)
+    }
     print("Database URL found. Using PostgreSQL")
 else:
     DATABASES = {
@@ -118,17 +116,18 @@ else:
     print("Database URL not found.  Using local sqlite3")
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': {
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    }
+    ]
 }
 
-CORS_ORIGIN_WHITELIST = (
+# django-cors-headers >= 4 uses CORS_ALLOWED_ORIGINS (list)
+CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'http://localhost:3000',
     'https://angular-movie-rater.web.app',
-    'https://angular-movie-rater.firebaseapp.com'
-)
+    'https://angular-movie-rater.firebaseapp.com',
+]
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
@@ -167,6 +166,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Default primary key field type (Django 3.2+)
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -187,15 +189,9 @@ if DEBUG:
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     )
 
-    MEDIAFILES_LOCATION = 'media'
-    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
-
-    # AWS custom domain and , media files location, gets injected here
+    # Local media served from filesystem in development
     MEDIA_URL = '/img/'
-
-    MEDIA_ROOT = (
-        os.path.join(BASE_DIR, 'media'),
-    )
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
     AWS_S3_OBJECT_PARAMETERS = {
         'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
@@ -209,8 +205,8 @@ else:
     AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
     AWS_DEFAULT_ACL = None
 
-    # static files storage parameters
-    DEFAULT_FILE_STORAGE = 'app.storage_backends.MediaStorage'
+    # static/media files storage parameters
+    DEFAULT_FILE_STORAGE = 'storage_backends.MediaStorage'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     STATIC_URL = '/static/'
@@ -227,11 +223,8 @@ else:
     )
 
     MEDIAFILES_LOCATION = 'media'
-    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
-    # AWS custom domain and , media files location, gets injected here
+    # AWS custom domain and media files location, gets injected here
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 
-    MEDIA_ROOT = (
-        os.path.join(BASE_DIR, 'media'),
-    )
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

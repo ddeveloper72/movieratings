@@ -38,5 +38,10 @@ class Rating(models.Model):
 
     #  insure the user can not rate for the same movie more than once
     class Meta:
-        unique_together = (('user', 'movie'),)  # tuple
-        index_together = (('user', 'movie'),)
+        # Replace deprecated unique_together/index_together with modern constraints and indexes
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'movie'], name='unique_user_movie')
+        ]
+        indexes = [
+            models.Index(fields=['user', 'movie'], name='idx_user_movie')
+        ]

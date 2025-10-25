@@ -5,3 +5,6 @@
 *.pyc
 env.py
 staticfiles/*
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
