@@ -16,12 +16,24 @@ import environ
 
 
 # Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
+env = environ.Env(
+    # Set default values
+    DEBUG=(bool, True),
+    SECRET_KEY=(str, 'django-insecure-default-key-please-change-in-production'),
+)
+# Read .env file explicitly
+env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
+
+# In development, ignore system DATABASE_URL to use local sqlite
+if env.bool("DEBUG", default=True) and "DATABASE_URL" in os.environ:
+    # Remove DATABASE_URL from environment if we're in DEBUG mode
+    # This allows local development with sqlite3
+    del os.environ["DATABASE_URL"]
 
 import dj_database_url
 
-# Switch Debug between True and False
 # Toggle DEBUG via environment, default to True for local development
 DEBUG = env.bool("DEBUG", default=True)
 print("Running in development mode" if DEBUG else "Running in production mode")
@@ -38,6 +50,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 
 ALLOWED_HOSTS = [
+    '*',  # Allow all hosts in development - restrict in production!
+] if DEBUG else [
     '.localhost',
     '127.0.0.1',
     'ddeveloper72-movie-rater-api.herokuapp.com'
@@ -100,20 +114,28 @@ LOGIN_REDIRECT_URL = '/admin/'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-db_url = env("DATABASE_URL", default=None)
-if db_url:
-    DATABASES = {
-        'default': dj_database_url.parse(db_url)
-    }
-    print("Database URL found. Using PostgreSQL")
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# In development mode, prefer sqlite unless DATABASE_URL is explicitly set in .env
+if DEBUG:
+    db_url = env("DATABASE_URL", default=None)
+    if db_url:
+        DATABASES = {
+            'default': dj_database_url.parse(db_url)
         }
+        print("Database URL found. Using PostgreSQL")
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            }
+        }
+        print("Database URL not found. Using local sqlite3")
+else:
+    # Production mode - require DATABASE_URL
+    DATABASES = {
+        'default': dj_database_url.parse(env('DATABASE_URL'))
     }
-    print("Database URL not found.  Using local sqlite3")
+    print("Production mode: Using configured database")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

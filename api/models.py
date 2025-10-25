@@ -18,13 +18,13 @@ class Movie(models.Model):
 
     # sum ratings and divide by number of ratings
     def ave_ratings(self):
-        sum = 0
+        total = 0
         ratings = Rating.objects.filter(movie=self)
         for rating in ratings:
-            sum += rating.stars
+            total += rating.stars
         
         if len(ratings) > 0:
-            return sum / len(ratings)
+            return total / len(ratings)
         else:
             return 0
 
