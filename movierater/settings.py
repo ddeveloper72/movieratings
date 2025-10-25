@@ -124,8 +124,8 @@ if azure_sql_host:
     is_heroku = os.environ.get('DYNO') is not None  # Heroku sets DYNO env var
     
     if is_heroku:
-        # Use FreeTDS driver on Heroku - specify full library path
-        driver = '/usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so'
+        # Use FreeTDS driver on Heroku - configured in odbcinst.ini
+        driver = 'FreeTDS'
         extra_params = 'TDS_Version=8.0;'
     else:
         # Use ODBC Driver 18 on Windows
