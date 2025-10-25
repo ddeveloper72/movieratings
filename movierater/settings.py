@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -215,38 +216,38 @@ if DEBUG:
     MEDIA_URL = '/img/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
-    AWS_S3_OBJECT_PARAMETERS = {
-        'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
-        'CacheControl': 'max-age=94608000',
-    }
-    AWS_LOCATION = 'static'
-    AWS_S3_REGION_NAME = 'eu-west-1'
-    AWS_STORAGE_BUCKET_NAME = 'movie-rater'
-    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-    AWS_DEFAULT_ACL = None
-
-    # static/media files storage parameters
-    DEFAULT_FILE_STORAGE = 'storage_backends.MediaStorage'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
+    # Production static files served by WhiteNoise (no AWS S3 needed)
     STATIC_URL = '/static/'
-
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
-
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+    
     STATICFILES_FINDERS = (
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     )
-
-    MEDIAFILES_LOCATION = 'media'
-
-    # AWS custom domain and media files location, gets injected here
-    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
-
+    
+    # WhiteNoise storage with compression and caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # Media files (if using AWS S3 for media uploads, keep these)
+    # Otherwise, serve media files locally or disable
+    MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    
+    # AWS S3 configuration (optional - only needed for media file uploads)
+    # If you don't need S3 for media, you can remove these
+    # AWS_S3_OBJECT_PARAMETERS = {
+    #     'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    #     'CacheControl': 'max-age=94608000',
+    # }
+    # AWS_LOCATION = 'media'
+    # AWS_S3_REGION_NAME = 'eu-west-1'
+    # AWS_STORAGE_BUCKET_NAME = 'movie-rater'
+    # AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+    # AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+    # AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    # AWS_DEFAULT_ACL = None
+    # DEFAULT_FILE_STORAGE = 'storage_backends.MediaStorage'
