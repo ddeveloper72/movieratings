@@ -119,7 +119,20 @@ LOGIN_REDIRECT_URL = '/admin/'
 azure_sql_host = env("AZURE_SQL_HOST", default=None)
 
 if azure_sql_host:
-    # Use Azure SQL Database with ODBC Driver 18
+    # Detect if running on Heroku (uses FreeTDS) vs local Windows (uses ODBC Driver 18)
+    import platform
+    is_heroku = os.environ.get('DYNO') is not None  # Heroku sets DYNO env var
+    
+    if is_heroku:
+        # Use FreeTDS driver on Heroku
+        driver = 'FreeTDS'
+        extra_params = 'TDS_Version=8.0;'
+    else:
+        # Use ODBC Driver 18 on Windows
+        driver = 'ODBC Driver 18 for SQL Server'
+        extra_params = 'Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+    
+    # Use Azure SQL Database
     DATABASES = {
         'default': {
             'ENGINE': 'mssql',
@@ -129,12 +142,12 @@ if azure_sql_host:
             'HOST': azure_sql_host,
             'PORT': env('AZURE_SQL_PORT', default='1433'),
             'OPTIONS': {
-                'driver': 'ODBC Driver 18 for SQL Server',
-                'extra_params': 'Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+                'driver': driver,
+                'extra_params': extra_params
             },
         }
     }
-    print(f"Using Azure SQL Database: {env('AZURE_SQL_NAME')} on {azure_sql_host}")
+    print(f"Using Azure SQL Database: {env('AZURE_SQL_NAME')} on {azure_sql_host} (driver: {driver})")
 elif DEBUG:
     # Development mode - use sqlite3
     DATABASES = {
