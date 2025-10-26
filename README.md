@@ -1,203 +1,427 @@
-# Django Movie Ratings API
+# 🎬 Movie Rater API
 
-## [live application on Heroku](https://ddeveloper72-movie-rater-api.herokuapp.com/)
+[![Django](https://img.shields.io/badge/Django-5.1.13-green.svg)](https://www.djangoproject.com/)
+[![DRF](https://img.shields.io/badge/Django%20REST%20Framework-3.15.2-red.svg)](https://www.django-rest-framework.org/)
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![AWS S3](https://img.shields.io/badge/AWS-S3-orange.svg)](https://aws.amazon.com/s3/)
+[![Azure SQL](https://img.shields.io/badge/Azure-SQL%20Database-blue.svg)](https://azure.microsoft.com/en-us/products/azure-sql/database/)
 
-## Django 3.0.7. rest API application for providing secure access to the movie ratings SQL data base
+**Live Application:** [https://ddeveloper72-movie-rater-api.herokuapp.com/](https://ddeveloper72-movie-rater-api.herokuapp.com/)
 
-## about me
+## 📖 Overview
 
-The purpose of this application is to serve information to my front end Angular 10.  I ran into difficulty when I decided to host all of my static files remotely, on AWS.  having used SVG icons from a sprite library, I discovered that Django's built in security principles, wouldn't let me render them. Like most things, I discovered that there was a trick or a knack, to use JavaScript to reach out to my AWS S3 bucket instead and so render the svg icons inline via DOM model injection to my HTML mark-up.
+Movie Rater API is a production-ready Django REST Framework application that provides a complete backend service for movie rating and review platforms. Built with modern cloud infrastructure, it serves as the backend API for an Angular 10 frontend application, handling user authentication, movie data management, rating systems, and cloud-based image storage.
 
-Additional lessons learned, was how to log into and back out of the Django admin site, using my own frontend.  I'll certainly be maintaining  method for reaching the admin login portal for future projects!  The live link above, will let one see for themselves, what I mean.
+### 🎯 Purpose
 
-### the technical stuff
+This API enables developers to build movie rating applications with features like:
+- **User Management** - Token-based authentication for secure API access
+- **Movie Database** - CRUD operations for movie information with image support
+- **Rating System** - User-generated ratings with automatic average calculation
+- **Cloud Storage** - AWS S3 integration for movie poster/cover image uploads
+- **Admin Portal** - Custom Django admin interface accessible via frontend
 
-If you're interested in the nuts and bolts for accessing the admin login, you can do so by updating your url patters like so:
+### 🏗️ Architecture
 
+- **Backend Framework:** Django 5.1.13 with Django REST Framework 3.15.2
+- **Database (Production):** Azure SQL Database
+- **Database (Development):** SQLite3
+- **Image Storage:** AWS S3 with presigned URL upload
+- **Static Files:** WhiteNoise for static file serving
+- **Deployment:** Heroku with automatic GitHub deployment
+- **Authentication:** Token-based authentication via DRF
+
+## ✨ Key Features
+
+### 1. **Secure Image Upload to AWS S3**
+- Direct frontend-to-S3 uploads using presigned URLs
+- 8-layer security system (authentication, rate limiting, file validation)
+- Zero-cost deduplication using content-based hashing
+- Support for JPEG, PNG, WebP, and GIF formats
+- 5 MB file size limit with automatic enforcement
+
+### 2. **RESTful API Design**
+- Complete CRUD operations for movies, users, and ratings
+- Token-based authentication for all protected endpoints
+- Comprehensive error handling and validation
+- API browsable interface for development
+
+### 3. **Intelligent Rating System**
+- Per-user movie ratings (1-5 stars)
+- Automatic average rating calculation
+- Unique user-movie rating constraint (one rating per user per movie)
+- Real-time rating updates
+
+### 4. **Production-Ready Infrastructure**
+- Azure SQL Database for scalable data storage
+- WhiteNoise for efficient static file serving
+- Environment-based configuration for dev/prod separation
+- Comprehensive security measures
+
+## 📚 Additional Documentation
+
+- **[S3 Upload Integration Guide](S3_UPLOAD_GUIDE.md)** - Complete guide for frontend developers to implement image uploads
+- **[Security Documentation](SECURITY.md)** - Detailed security measures and best practices
+
+
+## 🚀 API Endpoints
+
+### Authentication
+- `POST /auth/` - Obtain authentication token
+  ```json
+  {"username": "user", "password": "pass"}
+  ```
+
+### Users
+- `GET /api/users/` - List all users
+- `POST /api/users/` - Create new user
+- `GET /api/users/{id}/` - Get user details
+- `PUT /api/users/{id}/` - Update user
+- `DELETE /api/users/{id}/` - Delete user
+
+### Movies
+- `GET /api/movies/` - List all movies
+- `POST /api/movies/` - Create new movie (admin only)
+- `GET /api/movies/{id}/` - Get movie details
+- `PUT /api/movies/{id}/` - Update movie (admin only)
+- `DELETE /api/movies/{id}/` - Delete movie (admin only)
+- `POST /api/movies/{id}/rate_movie/` - Rate a movie (1-5 stars)
+- `POST /api/movies/get_upload_url/` - Get presigned S3 URL for image upload
+
+### Ratings
+- `GET /api/ratings/` - List all ratings
+- `GET /api/ratings/{id}/` - Get rating details
+
+## 📊 Data Models
+
+### Movie Model
 ```python
-
-from django.contrib.auth.views import LoginView
-
-urlpatterns = [
-    
-    # add a custom admin login page
-    path('login/', LoginView.as_view(),
-        {'template_name': 'core/login.html'}, name='login'),
-    # include logout page as home for admin on logout
-    path('admin/logout/', include('home.urls')),
-    # ...rest of my patterns continue
-] 
-
-```
-
-Here I'm referring to the built in Django LoginView as the view function then on user logout, redirecting the user to the home page.  using logoutView, redirects the user to the Django's built in needed during development when there was no custom front end, but now now.
-
-### the API itself
-
-I've used the concept, based on a tutorial by Senior Full Stack Engineer, Krystian Czekalski, then added to it for my own learning experience.
-
-#### Beginning with the Models
-
-* 1st we setup a Movie mode:
-Each movie will have a title, description and an image.
-Each movie will also have a rating as well as an average rating (average rating from multiple users).
-
-* 2nd we setup a Ratings model:
-the movie is linked to the 1st model  by ForeignKey
-the user from the authenticated User is linked by ForeignKey
-The number of stars given by the user out of 5, is assigned to the movie.
-The relationship between user and movie is unique.
-
-#### Setting up the Serializer
-
-In the simplest sense, the serializer makes sense of the Model data in JSON format objects.  
-
-This application has 3 serializers and these are the primary imports:
-
-```python
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Movie, Rating
-from rest_framework.authtoken.models import Token
-```
-
-UserSerializer returns the User model data as an object.  When creating a user, serializer uses rest framework to create a Token for the user.  This then negates the need to pass usernames and passwords while the user interacts with the API services.
-
-```python
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'password')
-        # define parameters for password
-        extra_kwargs = {'password': {'write_only': True, 'required': True}}
-
-    #  create own definition to create user from built in crate_user function
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        # crate token for new user and add to user DB
-        Token.objects.create(user=user)
-        return user
-```
-
-Constructing the user in the database
-
-```JSON
 {
-    "name": "User List",
-    "description": "",
-    "renders": [
-        "application/json",
-        "text/html"
-    ],
-    "parses": [
-        "application/json",
-        "application/x-www-form-urlencoded",
-        "multipart/form-data"
-    ],
-    "actions": {
-        "POST": {
-            "id": {
-                "type": "integer",
-                "required": false,
-                "read_only": true,
-                "label": "ID"
-            },
-            "username": {
-                "type": "string",
-                "required": true,
-                "read_only": false,
-                "label": "Username",
-                "help_text": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
-                "max_length": 150
-            },
-            "password": {
-                "type": "string",
-                "required": true,
-                "read_only": false,
-                "label": "Password",
-                "max_length": 128
-            }
-        }
-    }
+    "id": 1,
+    "title": "The Shawshank Redemption",
+    "description": "Two imprisoned men bond over years...",
+    "imagePath": "https://movie-rater.s3.eu-west-1.amazonaws.com/media/movies/movie-abc123.jpg",
+    "no_of_ratings": 3,
+    "ave_ratings": 4.67
 }
 ```
 
-Raw data of the user list:
+### Rating Model
+```python
+{
+    "id": 1,
+    "stars": 5,
+    "user": 1,
+    "movie": 1
+}
+```
 
-```JSON
-[
-    {
-        "id": 2,
-        "username": "sampleName01"
-    },
-    {
-        "id": 1,
-        "username": "sampleName02"
-    },
-    {
-        "id": 3,
-        "username": "sampleName03"
-    }
+### User Model
+```python
+{
+    "id": 1,
+    "username": "moviefan",
+    "password": "***" // write-only
+}
+```
+
+## 🔐 Authentication
+
+This API uses **Token Authentication** for secure access:
+
+1. **Obtain Token:**
+   ```bash
+   curl -X POST https://ddeveloper72-movie-rater-api.herokuapp.com/auth/ \
+     -H "Content-Type: application/json" \
+     -d '{"username": "youruser", "password": "yourpass"}'
+   ```
+
+2. **Use Token in Requests:**
+   ```bash
+   curl -X GET https://ddeveloper72-movie-rater-api.herokuapp.com/api/movies/ \
+     -H "Authorization: Token your-token-here"
+   ```
+
+Tokens are automatically created when new users are registered.
+
+## 🖼️ Image Upload Workflow
+
+The API provides a secure, efficient workflow for uploading movie cover images:
+
+1. **Frontend requests presigned URL:**
+   ```typescript
+   POST /api/movies/get_upload_url/
+   {
+     "filename": "poster.jpg",
+     "contentType": "image/jpeg",
+     "fileHash": "abc123..." // Optional for deduplication
+   }
+   ```
+
+2. **Backend returns presigned URL:**
+   ```json
+   {
+     "upload_url": "https://movie-rater.s3.amazonaws.com/...",
+     "public_url": "https://movie-rater.s3.eu-west-1.amazonaws.com/media/movies/movie-abc123.jpg",
+     "method": "PUT",
+     "headers": {...}
+   }
+   ```
+
+3. **Frontend uploads directly to S3:**
+   ```typescript
+   PUT <upload_url>
+   Content-Type: image/jpeg
+   Body: <file binary>
+   ```
+
+4. **Frontend updates movie record:**
+   ```typescript
+   PATCH /api/movies/{id}/
+   {
+     "imagePath": "<public_url>"
+   }
+   ```
+
+See [S3_UPLOAD_GUIDE.md](S3_UPLOAD_GUIDE.md) for complete implementation details.
+
+## 🛡️ Security Features
+
+### 8-Layer Security System for Image Uploads:
+1. ✅ **Authentication Required** - Token-based authentication
+2. ✅ **Rate Limiting** - 10 uploads per user per hour
+3. ✅ **File Size Limit** - 5 MB maximum
+4. ✅ **File Type Validation** - Images only (JPEG, PNG, WebP, GIF)
+5. ✅ **Extension-MIME Validation** - Prevents disguised files
+6. ✅ **Unique Filename Generation** - UUID or hash-based
+7. ✅ **Presigned URL Expiration** - 1 hour expiration
+8. ✅ **Public-Read ACL** - Controlled access permissions
+
+See [SECURITY.md](SECURITY.md) for detailed security documentation.
+
+
+## 💻 Local Development Setup
+
+### Prerequisites
+- Python 3.11+
+- pip and virtualenv
+- Git
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ddeveloper72/movieratings.git
+   cd movieratings
+   ```
+
+2. **Create virtual environment:**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure environment variables:**
+   Create a `.env` file in the root directory:
+   ```env
+   SECRET_KEY=your-secret-key
+   DEBUG=True
+   AWS_ACCESS_KEY_ID=your-aws-key
+   AWS_SECRET_ACCESS_KEY=your-aws-secret
+   ```
+
+5. **Run migrations:**
+   ```bash
+   python manage.py migrate
+   ```
+
+6. **Create superuser:**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. **Run development server:**
+   ```bash
+   python manage.py runserver
+   ```
+
+8. **Access the API:**
+   - API Root: http://localhost:8000/api/
+   - Admin Portal: http://localhost:8000/admin/
+
+## 🧪 Testing
+
+### Test Presigned URL Generation
+```bash
+python manage.py shell
+```
+```python
+from api.s3_utils import generate_presigned_upload_url
+url_data = generate_presigned_upload_url('test.jpg', 'image/jpeg')
+print(url_data)
+```
+
+### Test API Endpoints
+```bash
+# Get authentication token
+curl -X POST http://localhost:8000/auth/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "yourpassword"}'
+
+# List movies
+curl -X GET http://localhost:8000/api/movies/ \
+  -H "Authorization: Token your-token-here"
+```
+
+## 📦 Technology Stack
+
+### Backend
+- **Django 5.1.13** - Web framework
+- **Django REST Framework 3.15.2** - API framework
+- **WhiteNoise 6.8.2** - Static file serving
+
+### Database
+- **Azure SQL Database** (Production)
+- **SQLite3** (Development)
+- **pyodbc 5.2.0** - Azure SQL driver
+
+### Cloud Services
+- **AWS S3** - Image storage
+- **boto3 1.35.77** - AWS SDK for Python
+- **botocore 1.35.77** - Low-level AWS interface
+
+### Deployment
+- **Heroku** - Platform as a Service
+- **gunicorn 23.0.0** - WSGI HTTP Server
+- **dj-database-url 2.3.0** - Database URL parsing
+
+### Other
+- **python-dotenv 1.0.1** - Environment variable management
+- **requests 2.32.3** - HTTP library
+
+## 🌐 Deployment
+
+### Heroku Deployment
+
+This project is configured for automatic deployment to Heroku:
+
+1. **Prerequisites:**
+   - Heroku account
+   - Heroku CLI installed
+   - Git repository connected to Heroku
+
+2. **Environment Variables:**
+   Set the following config vars in Heroku:
+   ```bash
+   heroku config:set SECRET_KEY=your-production-secret
+   heroku config:set DEBUG=False
+   heroku config:set AWS_ACCESS_KEY_ID=your-aws-key
+   heroku config:set AWS_SECRET_ACCESS_KEY=your-aws-secret
+   heroku config:set AZURE_SQL_HOST=your-azure-host
+   heroku config:set AZURE_SQL_NAME=your-database
+   heroku config:set AZURE_SQL_USER=your-username
+   heroku config:set AZURE_SQL_PASSWORD=your-password
+   ```
+
+3. **Deploy:**
+   ```bash
+   git push heroku main
+   ```
+
+4. **Run migrations on Heroku:**
+   ```bash
+   heroku run python manage.py migrate
+   ```
+
+### Automatic Deployment
+This repository is configured for automatic deployment from GitHub. Any push to the `main` branch triggers a deployment to Heroku.
+
+## 📁 Project Structure
+
+```
+MovieRaterApi/
+├── api/                      # Main API application
+│   ├── models.py            # Movie, Rating models
+│   ├── serializers.py       # DRF serializers
+│   ├── views.py             # API viewsets
+│   ├── urls.py              # API URL routing
+│   └── s3_utils.py          # S3 presigned URL utilities
+├── home/                    # Home page application
+│   ├── views.py            # Home view
+│   └── templates/          # HTML templates
+├── movierater/             # Project settings
+│   ├── settings.py        # Django configuration
+│   ├── urls.py            # Root URL configuration
+│   └── wsgi.py            # WSGI configuration
+├── static/                # Static files (CSS, JS, images)
+├── staticfiles/           # Collected static files
+├── templates/             # Global templates
+├── .env                   # Environment variables (not in git)
+├── .gitignore            # Git ignore rules
+├── db.sqlite3            # SQLite database (development)
+├── manage.py             # Django management script
+├── Procfile              # Heroku process file
+├── requirements.txt      # Python dependencies
+├── runtime.txt           # Python version for Heroku
+├── README.md             # This file
+├── S3_UPLOAD_GUIDE.md   # S3 upload integration guide
+└── SECURITY.md          # Security documentation
+```
+
+## 🔧 Admin Portal Integration
+
+This API includes a custom admin portal that can be accessed through your Angular frontend:
+
+```python
+from django.contrib.auth.views import LoginView
+
+urlpatterns = [
+    path('login/', LoginView.as_view(),
+        {'template_name': 'core/login.html'}, name='login'),
+    path('admin/logout/', include('home.urls')),
 ]
 ```
 
-MovieSerializer represents the model data as an object
+**Key Features:**
+- Custom admin login accessible from frontend
+- Seamless logout redirect to home page
+- Maintains Django's admin functionality
+- No need for separate admin interface
 
-```JSON
-[
-    {
-        "id": 1,
-        "title": "Some Movie Title 1",
-        "description": "movie description 1",
-        "imagePath": "web-link for movie image 1",
-        "no_of_ratings": 3,
-        "ave_ratings": 3.6666666666666665
-    },
-    {
-        "id": 2,
-        "title": "Some Movie Title 2",
-        "description": "movie description 2",
-        "imagePath": "web-link for movie image 2",
-        "no_of_ratings": 2,
-        "ave_ratings": 3.5
-    },
-    {
-        "id": 3,
-        "title": "Some Movie Title 3",
-        "description": "movie description 3",
-        "imagePath": "web-link for movie image 3",
-        "no_of_ratings": 1,
-        "ave_ratings": 3.0
-    }
-]
-```
+## 🎓 Learning Journey
 
-RatingSerializer represents the model data as an object
+This project evolved from a tutorial by Senior Full Stack Engineer **Krystian Czekalski**, with significant enhancements including:
+- AWS S3 integration for cloud image storage
+- Azure SQL Database for production data
+- Advanced security implementation (8-layer security system)
+- Zero-cost deduplication for image uploads
+- Custom admin portal integration
+- SVG sprite rendering solution via DOM injection
+- Comprehensive API documentation
 
-```JSON
-[
-    {
-        "id": 1,
-        "stars": 4,
-        "user": 1,
-        "movie": 1
-    },
-    {
-        "id": 2,
-        "stars": 2,
-        "user": 2,
-        "movie": 2
-    },
-    {
-        "id": 3,
-        "stars": 3,
-        "user": 3,
-        "movie": 1
-    }
-]
-```
+## 👨‍💻 Developer
 
-Each rating, links the movie to the user- the person who gave it their personal rating.  If we remove one of the users, we also remove their rating.  If we remove one of the movies, then the ratings for that movie from all of the different users are removed from the record.
+**Duncan Falconer (ddeveloper72)**
+- GitHub: [@ddeveloper72](https://github.com/ddeveloper72)
+- Repository: [movieratings](https://github.com/ddeveloper72/movieratings)
 
+## 📝 License
 
-![Readme Under Construction](https://github.com/ddeveloper72/django3-refresher/blob/master/static/img/django.png "Work in progress!")
+This project is open source and available for educational purposes.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/ddeveloper72/movieratings/issues).
+
+## 📞 Support
+
+For questions or support, please open an issue in the GitHub repository.
+
+---
+
+**Built with ❤️ using Django REST Framework**
