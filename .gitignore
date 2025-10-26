@@ -5,6 +5,7 @@
 .env.local
 .env.production
 .idea
+.vscode/settings.json
 *.sqlite3
 *.pyc
 env.py
