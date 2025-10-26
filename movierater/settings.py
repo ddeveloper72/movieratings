@@ -143,7 +143,8 @@ if azure_sql_host:
             'PORT': env('AZURE_SQL_PORT', default='1433'),
             'OPTIONS': {
                 'driver': driver,
-                'extra_params': extra_params
+                'extra_params': extra_params,
+                'host_is_server': True,
             },
         }
     }
