@@ -126,7 +126,7 @@ if azure_sql_host:
     if is_heroku:
         # Use FreeTDS driver on Heroku - configured in odbcinst.ini and freetds.conf
         driver = 'FreeTDS'
-        extra_params = 'TDS_Version=7.4;Encryption=required;'
+        extra_params = ''
     else:
         # Use ODBC Driver 18 on Windows
         driver = 'ODBC Driver 18 for SQL Server'

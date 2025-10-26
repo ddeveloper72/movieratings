@@ -3,3 +3,5 @@ unixodbc-dev
 freetds-dev
 freetds-bin
 tdsodbc
+libssl-dev
+openssl
