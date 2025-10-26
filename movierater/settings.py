@@ -116,23 +116,29 @@ LOGIN_REDIRECT_URL = '/admin/'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# Check if Azure SQL Database credentials are provided
-azure_sql_host = env("AZURE_SQL_HOST", default=None)
-
-if azure_sql_host:
-    # Detect if running on Heroku (uses FreeTDS) vs local Windows (uses ODBC Driver 18)
-    is_heroku = os.environ.get('DYNO') is not None  # Heroku sets DYNO env var
+# Priority: PostgreSQL (Heroku) > Azure SQL > SQLite (development)
+if 'DATABASE_URL' in os.environ:
+    # Use Heroku PostgreSQL (preferred for production)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+    print("Using Heroku PostgreSQL database")
+elif env("AZURE_SQL_HOST", default=None) and not DEBUG:
+    # Azure SQL configuration (fallback)
+    azure_sql_host = env("AZURE_SQL_HOST")
+    is_heroku = os.environ.get('DYNO') is not None
     
     if is_heroku:
-        # Use FreeTDS driver on Heroku - configured in odbcinst.ini and freetds.conf
         driver = 'FreeTDS'
         extra_params = ''
     else:
-        # Use ODBC Driver 18 on Windows
         driver = 'ODBC Driver 18 for SQL Server'
         extra_params = 'Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
     
-    # Use Azure SQL Database
     DATABASES = {
         'default': {
             'ENGINE': 'mssql',
@@ -149,7 +155,7 @@ if azure_sql_host:
         }
     }
     print(f"Using Azure SQL Database: {env('AZURE_SQL_NAME')} on {azure_sql_host} (driver: {driver})")
-elif DEBUG:
+else:
     # Development mode - use sqlite3
     DATABASES = {
         'default': {
@@ -158,9 +164,6 @@ elif DEBUG:
         }
     }
     print("Using local sqlite3 for development")
-else:
-    # Production mode without database - error
-    raise ValueError("Production mode requires database credentials (AZURE_SQL_HOST, etc.)")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
