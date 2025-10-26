@@ -1,5 +1,9 @@
 *.code-workspace
 .env
+.env.*
+.env.old
+.env.local
+.env.production
 .idea
 *.sqlite3
 *.pyc
