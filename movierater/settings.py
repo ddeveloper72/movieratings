@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'storages',
     'api',  # apps
     'home',  # apps
 ]
