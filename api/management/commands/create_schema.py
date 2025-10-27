@@ -30,40 +30,33 @@ class Command(BaseCommand):
         schema_name = options['schema_name']
         dry_run = options['dry_run']
         
-        # SQL to create schema if it doesn't exist
-        create_schema_sql = f"""
-        IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{schema_name}')
-        BEGIN
-            EXEC('CREATE SCHEMA [{schema_name}]')
-            PRINT 'Schema [{schema_name}] created successfully'
-        END
-        ELSE
-        BEGIN
-            PRINT 'Schema [{schema_name}] already exists'
-        END
-        """
-        
-        # SQL to grant permissions to current user
-        grant_permissions_sql = f"""
-        GRANT CREATE TABLE, ALTER, SELECT, INSERT, UPDATE, DELETE 
-        ON SCHEMA::[{schema_name}] TO [{env('AZURE_SQL_USER', default='developer')}]
-        """
+        # SQL commands as separate statements
+        check_schema_sql = f"SELECT COUNT(*) FROM sys.schemas WHERE name = '{schema_name}'"
+        create_schema_sql = f"CREATE SCHEMA [{schema_name}]"
+        grant_permissions_sql = f"GRANT CREATE TABLE, ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA::[{schema_name}] TO [{env('AZURE_SQL_USER', default='developer')}]"
         
         if dry_run:
             self.stdout.write(
                 self.style.WARNING('DRY RUN MODE - SQL commands that would be executed:')
             )
-            self.stdout.write(create_schema_sql)
-            self.stdout.write(grant_permissions_sql)
+            self.stdout.write(f"CHECK: {check_schema_sql}")
+            self.stdout.write(f"CREATE: {create_schema_sql}")
+            self.stdout.write(f"GRANT: {grant_permissions_sql}")
             return
         
         try:
             with connection.cursor() as cursor:
-                # Create schema
-                self.stdout.write(f'Creating schema: {schema_name}')
-                cursor.execute(create_schema_sql)
+                # Check if schema exists
+                cursor.execute(check_schema_sql)
+                schema_exists = cursor.fetchone()[0] > 0
                 
-                # Grant permissions
+                if not schema_exists:
+                    self.stdout.write(f'Creating schema: {schema_name}')
+                    cursor.execute(create_schema_sql)
+                else:
+                    self.stdout.write(f'Schema {schema_name} already exists')
+                
+                # Grant permissions (always run this in case permissions are missing)
                 self.stdout.write(f'Granting permissions on schema: {schema_name}')
                 cursor.execute(grant_permissions_sql)
                 
