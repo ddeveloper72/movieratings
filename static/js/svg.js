@@ -4,16 +4,16 @@
 
 var ajax = new XMLHttpRequest();
 ajax.open(
-  "GET", "/static/sprites/sprite.svg", 
+  "GET", "/static/sprites/sprite.svg",
   true
-  );
+);
 ajax.send();
-ajax.onload = function(e) {
+ajax.onload = function (e) {
   var div = document.createElement("div");
   div.innerHTML = ajax.responseText;
   document.body
-  .insertBefore(
-    div, 
-    document.body.childNodes[0]
+    .insertBefore(
+      div,
+      document.body.childNodes[0]
     );
 }
