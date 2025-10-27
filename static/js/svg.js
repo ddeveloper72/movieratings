@@ -4,7 +4,7 @@
 
 var ajax = new XMLHttpRequest();
 ajax.open(
-  "GET", "https://movie-rater.s3.amazonaws.com/static/sprites/sprite.svg", 
+  "GET", "/static/sprites/sprite.svg", 
   true
   );
 ajax.send();
