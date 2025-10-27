@@ -150,6 +150,9 @@ elif env("AZURE_SQL_HOST", default=None) and not DEBUG:
                 'driver': driver,
                 'extra_params': extra_params,
                 'host_is_server': True,
+                'options': {
+                    'isolation_level': 'read_committed',
+                },
             },
         }
     }
@@ -163,6 +166,9 @@ else:
         }
     }
     print("Using local sqlite3 for development")
+
+# Database routers for schema management in shared Azure SQL Database
+DATABASE_ROUTERS = ['movierater.database_router.MovieRaterSchemaRouter']
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+import environ
+
+# Initialize environment for schema configuration
+env = environ.Env()
 
 # Create your models here.
 
@@ -9,6 +13,12 @@ class Movie(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=360)
     imagePath = models.URLField(max_length=200, blank=True, null=True)
+    
+    class Meta:
+        # Specify schema for multi-tenant Azure SQL Database
+        db_table = f"{env('AZURE_SQL_SCHEMA', default='movie_rater_api')}.movie"
+        verbose_name = "Movie"
+        verbose_name_plural = "Movies"
 
     # count the number of ratings for the movie
     def no_of_ratings(self):
@@ -38,10 +48,14 @@ class Rating(models.Model):
 
     #  insure the user can not rate for the same movie more than once
     class Meta:
+        # Specify schema for multi-tenant Azure SQL Database
+        db_table = f"{env('AZURE_SQL_SCHEMA', default='movie_rater_api')}.rating"
+        verbose_name = "Rating"
+        verbose_name_plural = "Ratings"
         # Replace deprecated unique_together/index_together with modern constraints and indexes
         constraints = [
-            models.UniqueConstraint(fields=['user', 'movie'], name='unique_user_movie')
+            models.UniqueConstraint(fields=['user', 'movie'], name='unique_user_movie_rating')
         ]
         indexes = [
-            models.Index(fields=['user', 'movie'], name='idx_user_movie')
+            models.Index(fields=['user', 'movie'], name='idx_user_movie_rating')
         ]
